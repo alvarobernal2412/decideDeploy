@@ -7,7 +7,9 @@ on:
 
 jobs:
   build:
-
+    strategy:
+      matrix:
+        python-version: ['3.10.12', '3.11']
     runs-on: ubuntu-latest
 
     services:
@@ -24,10 +26,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3 #Github actions marketplace, en este caso este clona el repositorio
-    - name: Set up Python 3.10.12
+    - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v4
       with:
-        python-version: 3.10.12
+        python-version: ${{ matrix.python-version }}
     - name: psycopg2 prerequisites
       run: sudo apt-get install libpq-dev 
     - name: Install dependencies and config
