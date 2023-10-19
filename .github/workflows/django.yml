@@ -2,8 +2,14 @@ name: Python application
 
 on:
   push:
-    branches:
-      - matrices
+     branches:
+	   - prueba
+  workflow_call:
+    secrets:
+      CODACY_PROJECT_TOKEN:
+        required: true
+
+  #En workflow_call se especifica que se ejecutará cuando se llame desde otro workflow, en este caso desde release.yml
 
 jobs:
   build:

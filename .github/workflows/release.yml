@@ -1,0 +1,26 @@
+name: release
+
+on:
+  push: 
+    tags:
+      - '*'
+      #Se pueden seleccionar los tags que se quieran, en este caso se seleccionan todos
+
+permissions:
+  contents: write
+
+jobs:
+  buildTest:
+    uses: alvarobernal2412/decideDeploy/.github/workflows/django.yml@prueba
+    #Reutiliza el workflow de django.yml de la rama prueba de mi repositorio
+    secrets: 
+      CODACY_PROJECT_TOKEN: ${{secrets.CODACY_PROJECT_TOKEN}}
+     
+  release:
+    needs: buildTest
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Release
+        uses: softprops/action-gh-release@v1
