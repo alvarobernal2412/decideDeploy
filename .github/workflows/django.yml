@@ -3,25 +3,21 @@ name: Python application
 on:
   push:
      branches:
-	    - prueba
+      - prueba
   workflow_call:
     secrets:
       CODACY_PROJECT_TOKEN:
         required: true
-
-  #En workflow_call se especifica que se ejecutará cuando se llame desde otro workflow, en este caso desde release.yml
+  
 
 jobs:
   build:
-    strategy:
-      matrix:
-        python-version: ['3.10.12', '3.11']
-        postgres-version: ['postgres:14.9', 'postgres:15']
+
     runs-on: ubuntu-latest
 
     services:
       postgres:
-        image: ${{ matrix.postgres-version }}
+        image: postgres:14.9
         env:
           POSTGRES_USER: decide
           POSTGRES_PASSWORD: decide
@@ -32,18 +28,17 @@ jobs:
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
     steps:
-    - uses: actions/checkout@v3 #Github actions marketplace, en este caso este clona el repositorio
-    - name: Set up Python ${{ matrix.python-version }}
+    - uses: actions/checkout@v3
+    - name: Set up Python 3.10.12
       uses: actions/setup-python@v4
       with:
-        python-version: ${{ matrix.python-version }}
+        python-version: 3.10.12
     - name: psycopg2 prerequisites
-      run: sudo apt-get install libpq-dev 
+      run: sudo apt-get install libpq-dev
     - name: Install dependencies and config
-      #Instala las dependencias de  decide
       run: |
         python -m pip install --upgrade pip
-        pip install -r requirements.txt 
+        pip install -r requirements.txt
         pip install codacy-coverage
         cp decide/local_settings.gactions.py decide/local_settings.py
     - name: Run migrations (unnecessary)
